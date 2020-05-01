@@ -14,7 +14,10 @@
     },
 
     agencyCheckNumberIsValid: function(agencyCheckNumber) {
-      return agencyCheckNumber.length == this.agencyCheckNumberLength() && 
+      if(agencyCheckNumber === undefined || agencyCheckNumber === "")
+        return true;
+      else
+        return agencyCheckNumber.length == this.agencyCheckNumberLength() &&  
         Moip.CommonBankAccountValidator.agencyCheckNumberIsValid(agencyCheckNumber);
     },
 
@@ -28,12 +31,16 @@
     },
 
     agencyCheckNumberMatch: function(bankAccount) {
-      var checkNumberCalculated = Moip.BradescoCheckNumberCalculator.calculateAgency(bankAccount.agencyNumber);
-      var checkNumberInformed = bankAccount.agencyCheckNumber.toUpperCase();
-      if (checkNumberInformed === "0") {
-        return checkNumberCalculated === checkNumberInformed || checkNumberCalculated === "P";
+      if(bankAccount.agencyCheckNumber === undefined || bankAccount.agencyCheckNumber === ""){
+        return true;
+      } else {
+        var checkNumberCalculated = Moip.BradescoCheckNumberCalculator.calculateAgency(bankAccount.agencyNumber);
+        var checkNumberInformed = bankAccount.agencyCheckNumber.toUpperCase();
+        if (checkNumberInformed === "0") {
+          return checkNumberCalculated === checkNumberInformed || checkNumberCalculated === "P";
+        }
+        return checkNumberCalculated === checkNumberInformed;
       }
-      return checkNumberCalculated === checkNumberInformed;
     },
     
     accountCheckNumberMatch: function(bankAccount) {
@@ -50,7 +57,7 @@
     },
 
     agencyCheckNumberMsgError: function() {
-      return Moip.CommonBankAccountValidator.agencyCheckNumberMsgError(this.agencyCheckNumberLength());
+      return Moip.CommonBankAccountValidator.agencyCheckNumberOptionalMsgError(this.agencyCheckNumberOptionalLength());
     },
 
     accountNumberMsgError: function() {
@@ -59,10 +66,12 @@
 
     agencyCheckNumberLength: function() { return 1; },
 
+    agencyCheckNumberOptionalLength: function() { return 0; },
+
     accountNumberLength: function() { return 7; }
 
   };
 
   Moip.BradescoValidator = BradescoValidator();
 
-})(window);
+})(global || window);
